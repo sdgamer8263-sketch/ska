@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>SKA Hosting</title>
@@ -19,29 +19,27 @@ body{
 .box{
   background:#111;
   padding:30px;
-  width:320px;
+  width:300px;
   border-radius:15px;
-  box-shadow:0 0 25px #00ffff;
+  box-shadow:0 0 20px cyan;
   text-align:center;
 }
 
-h1,h2{color:#0ff}
-p{color:#ccc}
-
+h1,h2{color:cyan}
 button{
   width:90%;
   padding:12px;
-  margin:10px;
+  margin-top:15px;
   border:none;
   border-radius:10px;
-  background:#00ffff;
+  background:cyan;
   font-size:16px;
   cursor:pointer;
 }
 
 input{
   width:90%;
-  padding:12px;
+  padding:10px;
   margin:8px;
   border-radius:8px;
   border:none;
@@ -55,37 +53,24 @@ input{
 
 <body>
 
-<!-- GET STARTED SCREEN -->
-<div class="box" id="startBox">
-  <h1>Welcome to SKA Hosting</h1>
-  <p>For Students & Gamers</p>
-  <button id="getStartedBtn">Get Started</button>
+<div class="box" id="start">
+  <h1>Welcome to SKA</h1>
+  <button id="startBtn">Get Started</button>
 </div>
 
-<!-- LOGIN / REGISTER SCREEN -->
-<div class="box hidden" id="loginBox">
+<div class="box hidden" id="login">
   <h2>Login / Register</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+  <input placeholder="Email">
+  <input type="password" placeholder="Password">
+  <button>Login</button>
+  <button>Register</button>
 </div>
 
 <script>
-/* GET STARTED CLICK FIX */
-document.getElementById("getStartedBtn").addEventListener("click", function(){
-  document.getElementById("startBox").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
-});
-
-/* TEMP LOGIN (just to test UI) */
-function login(){
-  alert("Login clicked (UI working)");
-}
-
-function register(){
-  alert("Register clicked (UI working)");
-}
+document.getElementById("startBtn").onclick = function(){
+  document.getElementById("start").style.display = "none";
+  document.getElementById("login").style.display = "block";
+};
 </script>
 
 </body>

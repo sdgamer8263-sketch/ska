@@ -8,56 +8,80 @@
 <style>
 body{
   margin:0;
-  height:100vh;
+  min-height:100vh;
   background:#000;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
   font-family:Arial;
 }
 
+/* Neon glow background */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top, #00ffff22, transparent 40%),
+    radial-gradient(circle at bottom, #ff00ff22, transparent 40%);
+  z-index:-1;
+}
+
 .box{
   background:#111;
   padding:30px;
-  width:300px;
+  width:320px;
   border-radius:15px;
-  box-shadow:0 0 20px cyan;
+  box-shadow:0 0 25px #00ffff;
   text-align:center;
 }
 
-h1,h2{color:cyan}
+h1,h2{color:#0ff}
+p{color:#ccc}
+
 button{
   width:90%;
   padding:12px;
-  margin-top:15px;
+  margin:10px;
   border:none;
   border-radius:10px;
-  background:cyan;
+  background:#00ffff;
   font-size:16px;
   cursor:pointer;
 }
 
 input{
   width:90%;
-  padding:10px;
+  padding:12px;
   margin:8px;
   border-radius:8px;
   border:none;
 }
 
-.hidden{
-  display:none;
+.hidden{display:none}
+
+/* Footer */
+footer{
+  margin-top:20px;
+  font-size:13px;
+  color:#00ffff;
+  text-align:center;
+  text-shadow:0 0 6px #00ffff;
 }
 </style>
 </head>
 
 <body>
 
+<!-- GET STARTED -->
 <div class="box" id="start">
-  <h1>Welcome to SKA</h1>
+  <h1>Welcome to SKA Hosting 🚀</h1>
+  <p>Built for students and gamers</p>
   <button id="startBtn">Get Started</button>
 </div>
 
+<!-- LOGIN / REGISTER -->
 <div class="box hidden" id="login">
   <h2>Login / Register</h2>
   <input placeholder="Email">
@@ -65,6 +89,10 @@ input{
   <button>Login</button>
   <button>Register</button>
 </div>
+
+<footer>
+  🎓🎮 Built for students and gamers to learn, play, and grow together.
+</footer>
 
 <script>
 document.getElementById("startBtn").onclick = function(){

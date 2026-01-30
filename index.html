@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ska Hosting Login/Register</title>
+<title>Ska Hosting Debug Login/Register</title>
 <style>
 body{
     margin:0;
@@ -83,6 +83,7 @@ body{
 <button id="registerBtn">Register</button>
 </div>
 
+<div id="debugLog" style="color:#0f0; font-size:0.9rem; margin-top:10px;"></div>
 </div>
 </div>
 
@@ -105,6 +106,14 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+// Debug: test DB connection immediately
+db.ref("debug-test").set({time: Date.now()})
+.then(()=>console.log("✅ Database connection OK!"))
+.catch(err=>{
+    console.error("❌ Database connection FAILED:", err);
+    document.getElementById("debugLog").textContent = "Database connection FAILED: check rules/URL in Firebase console!";
+});
 
 // DOM elements
 const getStartedBtn = document.getElementById('getStartedBtn');

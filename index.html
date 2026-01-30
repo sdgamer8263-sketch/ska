@@ -144,14 +144,15 @@ body{
 
 <script>
 // ✅ Firebase config (your project)
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
-  databaseURL: "https://ska-web-168fe-default-rtdb.firebaseio.com",
   projectId: "ska-web-168fe",
-  storageBucket: "ska-web-168fe.appspot.com",
+  storageBucket: "ska-web-168fe.firebasestorage.app",
   messagingSenderId: "782823377176",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d",
+  measurementId: "G-FFZ7V1ZSVZ"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();

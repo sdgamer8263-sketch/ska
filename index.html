@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA Secure Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SKA Login System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
@@ -12,51 +12,59 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#000;
   font-family:Arial;
+  background:#000;
 }
-.card{
-  width:330px;
-  padding:25px;
+.box{
   background:#111;
+  padding:30px;
+  width:320px;
   border-radius:15px;
-  box-shadow:0 0 30px #00ffff;
+  box-shadow:0 0 25px #00ffff;
   text-align:center;
 }
-h2{color:#0ff}
-input,button{
+h2{color:#0ff;}
+input{
   width:90%;
   padding:12px;
-  margin:8px;
+  margin:10px 0;
   border:none;
   border-radius:8px;
 }
 button{
+  width:95%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
   background:#00ffff;
-  font-weight:bold;
+  color:#000;
+  font-size:16px;
   cursor:pointer;
   box-shadow:0 0 15px #00ffff;
 }
-#logout{background:red;color:white}
-.hidden{display:none}
+small{
+  color:#aaa;
+  cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
-<div class="card" id="loginBox">
-  <h2>Login / Register</h2>
+<div class="box">
+  <h2 id="title">Login</h2>
+
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
+
   <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+  <button onclick="register()" id="regBtn">Register</button>
+
+  <small onclick="toggle()">New user? Register here</small>
 </div>
 
-<div class="card hidden" id="dashboard">
-  <h2 id="role">Dashboard</h2>
-  <button onclick="logout()" id="logout">Logout</button>
-</div>
-
+<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
@@ -71,39 +79,40 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-const ADMIN_EMAIL = "admin@ska.com";
+let isRegister = false;
 
-auth.onAuthStateChanged(user=>{
-  if(user){
-    loginBox.classList.add("hidden");
-    dashboard.classList.remove("hidden");
-
-    if(user.email === ADMIN_EMAIL){
-      role.innerText = "👑 Admin Dashboard";
-    } else {
-      role.innerText = "User Dashboard";
-      setTimeout(()=>{
-        window.location.href =
-        "https://sites.google.com/view/ska-hosting67/home";
-      },1500);
-    }
-  }
-});
+function toggle(){
+  isRegister = !isRegister;
+  document.getElementById("title").innerText = isRegister ? "Register" : "Login";
+  document.getElementById("regBtn").style.display = isRegister ? "block" : "none";
+}
 
 function register(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=>alert("Registered! Login now"))
-  .catch(e=>alert(e.message));
+  const e = email.value;
+  const p = password.value;
+
+  auth.createUserWithEmailAndPassword(e,p)
+  .then(()=>{
+    alert("Registration Successful! Now Login");
+    toggle();
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
 }
 
 function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .catch(()=>alert("Wrong credentials"));
-}
+  const e = email.value;
+  const p = password.value;
 
-function logout(){
-  auth.signOut();
-  location.reload();
+  auth.signInWithEmailAndPassword(e,p)
+  .then(()=>{
+    window.location.href =
+    "https://sites.google.com/view/ska-hosting67/home";
+  })
+  .catch(err=>{
+    alert("Wrong email or password");
+  });
 }
 </script>
 

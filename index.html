@@ -15,9 +15,8 @@ body{
   justify-content:center;
   align-items:center;
   font-family:Arial;
+  color:white;
 }
-
-/* MAIN BOX */
 .box{
   background:#111;
   padding:30px;
@@ -26,10 +25,8 @@ body{
   box-shadow:0 0 25px #00ffff;
   text-align:center;
 }
-
 h1,h2{color:#0ff}
 p{color:#ccc}
-
 button{
   width:90%;
   padding:12px;
@@ -40,7 +37,6 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-
 input{
   width:90%;
   padding:12px;
@@ -48,68 +44,92 @@ input{
   border-radius:8px;
   border:none;
 }
-
-.hidden{
-  display:none;
-}
-
-/* FOOTER */
+.hidden{display:none}
 footer{
-  margin-top:25px;
-  text-align:center;
-  color:#777;
+  margin-top:20px;
   font-size:13px;
-  padding-bottom:15px;
-}
-
-footer span{
-  color:#0ff;
+  color:#00ffff;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<!-- GET STARTED SCREEN -->
 <div class="box" id="startBox">
-  <h1>Welcome to SKA Hosting</h1>
-  <p>Built for Students & Gamers 🚀</p>
+  <h1>Welcome to SKA Hosting 🚀</h1>
+  <p>Built for students and gamers</p>
   <button id="getStartedBtn">Get Started</button>
 </div>
 
-<!-- LOGIN / REGISTER SCREEN -->
-<div class="box hidden" id="loginBox">
+<div class="box hidden" id="authBox">
   <h2>Login / Register</h2>
   <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+  <button id="loginBtn">Login</button>
+  <button id="registerBtn">Register</button>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <p>
-    © 2026 <span>SKA Hosting</span><br>
-    Empowering Students • Powering Gamers 🎮📚<br>
-    Learn • Build • Play • Grow
-  </p>
+  🎓🎮 Built for students and gamers to learn, play, and grow together.
 </footer>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 <script>
-/* GET STARTED CLICK */
-document.getElementById("getStartedBtn").addEventListener("click", function(){
-  document.getElementById("startBox").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
-});
+window.onload = function(){
 
-/* TEMP LOGIN (UI TEST) */
-function login(){
-  alert("Login clicked (UI working)");
-}
+  // UI logic
+  document.getElementById("getStartedBtn").addEventListener("click", () => {
+    document.getElementById("startBox").classList.add("hidden");
+    document.getElementById("authBox").classList.remove("hidden");
+  });
 
-function register(){
-  alert("Register clicked (UI working)");
-}
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+    authDomain: "ska-web-168fe.firebaseapp.com",
+    projectId: "ska-web-168fe",
+    appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Register
+  document.getElementById("registerBtn").addEventListener("click", () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert("Registered successfully! Now login.");
+      })
+      .catch(err => {
+        alert("REGISTER ERROR: " + err.message);
+        console.error(err);
+      });
+  });
+
+  // Login
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        window.location.href =
+          "https://sites.google.com/view/ska-hosting67/home";
+      })
+      .catch(err => {
+        alert("LOGIN ERROR: " + err.message);
+        console.error(err);
+      });
+  });
+
+};
 </script>
 
 </body>

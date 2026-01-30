@@ -5,20 +5,103 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neon Login/Register</title>
 <style>
-body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;font-family:Arial,sans-serif;background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);background-size:400% 400%;animation:gradientBG 15s ease infinite;}
-@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.neon-button{padding:20px 50px;font-size:2rem;color:#fff;text-transform:uppercase;letter-spacing:2px;border:none;border-radius:10px;cursor:pointer;background:transparent;box-shadow:0 0 5px #fff,0 0 10px #fff,0 0 20px #ff00ff,0 0 40px #ff00ff;transition:0.3s;}
-.neon-button:hover{box-shadow:0 0 10px #fff,0 0 20px #fff,0 0 40px #ff00ff,0 0 80px #ff00ff;}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.85);}
-.modal-content{background:#111;padding:30px;border-radius:15px;text-align:center;color:#fff;width:320px;box-shadow:0 0 20px #ff00ff;animation:popIn 0.5s ease;}
-@keyframes popIn{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
+    background-size:400% 400%;
+    animation:gradientBG 15s ease infinite;
+}
+@keyframes gradientBG{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+.neon-button{
+    padding:20px 50px;
+    font-size:2rem;
+    color:#fff;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:transparent;
+    box-shadow:0 0 5px #fff,0 0 10px #fff,0 0 20px #ff00ff,0 0 40px #ff00ff;
+    transition:0.3s;
+}
+.neon-button:hover{
+    box-shadow:0 0 10px #fff,0 0 20px #fff,0 0 40px #ff00ff,0 0 80px #ff00ff;
+}
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.85);
+}
+.modal-content{
+    background:#111;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    color:#fff;
+    width:320px;
+    box-shadow:0 0 20px #ff00ff;
+    animation:popIn 0.5s ease;
+}
+@keyframes popIn{
+    0%{transform:scale(0.5);opacity:0}
+    100%{transform:scale(1);opacity:1}
+}
 .tabs{display:flex;justify-content:space-around;margin-bottom:20px;}
-.tabs button{background:none;border:1px solid #ff00ff;color:#fff;padding:5px 15px;cursor:pointer;border-radius:5px;transition:0.3s;}
+.tabs button{
+    background:none;
+    border:1px solid #ff00ff;
+    color:#fff;
+    padding:5px 15px;
+    cursor:pointer;
+    border-radius:5px;
+    transition:0.3s;
+}
 .tabs button.active{background:#ff00ff;color:#111;}
-.modal-content input{padding:10px;margin:10px 0;width:90%;border-radius:5px;border:none;outline:none;background:#222;color:#fff;box-shadow:0 0 5px #ff00ff;transition:0.3s;}
-.modal-content input:focus{box-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff;}
-.modal-content button{padding:10px 20px;margin-top:10px;border:none;border-radius:5px;cursor:pointer;background:#ff00ff;color:#fff;box-shadow:0 0 10px #ff00ff;transition:0.3s;}
-.modal-content button:hover{box-shadow:0 0 20px #ff00ff,0 0 40px #ff00ff;}
+.modal-content input{
+    padding:10px;
+    margin:10px 0;
+    width:90%;
+    border-radius:5px;
+    border:none;
+    outline:none;
+    background:#222;
+    color:#fff;
+    box-shadow:0 0 5px #ff00ff;
+    transition:0.3s;
+}
+.modal-content input:focus{
+    box-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff;
+}
+.modal-content button{
+    padding:10px 20px;
+    margin-top:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    background:#ff00ff;
+    color:#fff;
+    box-shadow:0 0 10px #ff00ff;
+    transition:0.3s;
+}
+.modal-content button:hover{
+    box-shadow:0 0 20px #ff00ff,0 0 40px #ff00ff;
+}
 .error{color:#ff5555;font-size:0.9rem;min-height:18px;}
 </style>
 </head>
@@ -64,30 +147,54 @@ const loginError=document.getElementById('loginError');
 const regError=document.getElementById('regError');
 
 getStartedBtn.addEventListener('click',()=>authModal.style.display='flex');
-loginTab.addEventListener('click',()=>{loginForm.style.display='block';registerForm.style.display='none';loginTab.classList.add('active');registerTab.classList.remove('active');});
-registerTab.addEventListener('click',()=>{loginForm.style.display='none';registerForm.style.display='block';registerTab.classList.add('active');loginTab.classList.remove('active');});
+loginTab.addEventListener('click',()=>{
+    loginForm.style.display='block';
+    registerForm.style.display='none';
+    loginTab.classList.add('active');
+    registerTab.classList.remove('active');
+});
+registerTab.addEventListener('click',()=>{
+    loginForm.style.display='none';
+    registerForm.style.display='block';
+    registerTab.classList.add('active');
+    loginTab.classList.remove('active');
+});
 
-let usersMemory=[];
-function loadUsers(){try{return JSON.parse(localStorage.getItem('users')||'[]');}catch(e){return usersMemory;}}
-function saveUsers(users){try{localStorage.setItem('users',JSON.stringify(users)); return true;}catch(e){usersMemory=users; return true;}}
+function loadUsers(){try{return JSON.parse(localStorage.getItem('users')||'[]');}catch(e){return[];}}
+function saveUsers(users){try{localStorage.setItem('users',JSON.stringify(users));return true;}catch(e){return false;}}
 
+// ✅ Fixed registration
 registerBtn.addEventListener('click',e=>{
     e.preventDefault();
+    regError.textContent="";
     const username=document.getElementById('regUser').value.trim();
     const email=document.getElementById('regEmail').value.trim();
     const password=document.getElementById('regPass').value.trim();
+
     if(!username||!email||!password){regError.textContent="All fields are required!"; return;}
-    const emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,}$/i;
-    if(!emailPattern.test(email)){regError.textContent="Invalid email!"; return;}
-    let users=loadUsers();
-    if(users.find(u=>u.username===username||u.email===email)){regError.textContent="Username or Email exists!"; return;}
+    if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){regError.textContent="Invalid email!"; return;}
+
+    let users = loadUsers();
+    if(users.find(u=>u.username===username||u.email===email)){
+        regError.textContent="Username or Email already exists!";
+        return;
+    }
+
     users.push({username,email,password});
-    saveUsers(users);
-    window.location.href="https://sites.google.com/view/ska-hosting67/home";
+    if(saveUsers(users)){
+        // Delay redirect to ensure storage is saved
+        setTimeout(()=>{
+            window.location.href="https://sites.google.com/view/ska-hosting67/home";
+        },50);
+    }else{
+        regError.textContent="Unable to save account. Try again.";
+    }
 });
 
+// ✅ Login
 loginBtn.addEventListener('click',e=>{
     e.preventDefault();
+    loginError.textContent="";
     const userInput=document.getElementById('loginUser').value.trim();
     const password=document.getElementById('loginPass').value.trim();
     if(!userInput||!password){loginError.textContent="All fields required!"; return;}
@@ -97,7 +204,8 @@ loginBtn.addEventListener('click',e=>{
     else{loginError.textContent="Invalid username/email or password!";}
 });
 
-window.addEventListener('click', e=>{if(e.target===authModal) authModal.style.display='none';});
+// Close modal if clicked outside
+window.addEventListener('click',e=>{if(e.target===authModal) authModal.style.display='none';});
 </script>
 </body>
 </html>

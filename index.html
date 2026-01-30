@@ -2,97 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>SKA Hosting</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ska Hosting Debug Login/Register</title>
+
 <style>
 body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:Arial,sans-serif;
-    background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
-    background-size:400% 400%;
-    animation:gradientBG 15s ease infinite;
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
+  background-size:400% 400%;
+  animation:bg 15s ease infinite;
 }
-@keyframes gradientBG{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
-.neon-button{
-    padding:20px 50px;
-    font-size:2rem;
-    color:#fff;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    background:transparent;
-    box-shadow:0 0 5px #fff,0 0 10px #ff00ff,0 0 20px #ff00ff;
+button{
+  padding:15px 30px;
+  font-size:20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#ff00ff;
+  color:#fff;
+  box-shadow:0 0 15px #ff00ff;
 }
 .modal{
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    display:none; justify-content:center; align-items:center;
-    background:rgba(0,0,0,0.85);
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  justify-content:center;
+  align-items:center;
 }
-.modal-content{
-    background:#111; padding:30px; border-radius:15px; text-align:center;
-    color:#fff; width:320px; box-shadow:0 0 20px #ff00ff;
+.box{
+  background:#111;
+  padding:25px;
+  border-radius:15px;
+  width:300px;
+  color:#fff;
+  text-align:center;
 }
-.tabs{display:flex;justify-content:space-around;margin-bottom:20px;}
-.tabs button{
-    background:none; border:1px solid #ff00ff; color:#fff;
-    padding:5px 15px; cursor:pointer; border-radius:5px;
+input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
 }
-.tabs button.active{background:#ff00ff;color:#111;}
-.modal-content input{
-    padding:10px; margin:10px 0; width:90%; border-radius:5px; border:none;
-    background:#222; color:#fff; outline:none;
+.tab button{
+  background:none;
+  border:1px solid #ff00ff;
+  margin:5px;
 }
-.modal-content button{
-    padding:10px 20px; border:none; border-radius:5px; cursor:pointer;
-    background:#ff00ff; color:#fff;
+.tab .active{
+  background:#ff00ff;
 }
-.error{color:#ff5555;font-size:0.9rem; min-height:18px;}
 </style>
 </head>
+
 <body>
 
-<button class="neon-button" id="getStartedBtn">Get Started</button>
+<button onclick="openModal()">Get Started</button>
 
-<div class="modal" id="authModal">
-<div class="modal-content">
-<div class="tabs">
-<button id="loginTab" class="active">Login</button>
-<button id="registerTab">Register</button>
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="tab">
+      <button id="loginTab" class="active" onclick="showLogin()">Login</button>
+      <button id="regTab" onclick="showRegister()">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <input id="loginUser" placeholder="Username or Email">
+      <input id="loginPass" type="password" placeholder="Password">
+      <button onclick="loginUser()">Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="regBox" style="display:none">
+      <input id="regUser" placeholder="Username">
+      <input id="regEmail" placeholder="Email">
+      <input id="regPass" type="password" placeholder="Password">
+      <button onclick="registerUser()">Register</button>
+    </div>
+  </div>
 </div>
 
-<div id="loginForm">
-<input type="text" id="loginUser" placeholder="Username or Email">
-<input type="password" id="loginPass" placeholder="Password">
-<div class="error" id="loginError"></div>
-<button id="loginBtn">Login</button>
-</div>
-
-<div id="registerForm" style="display:none;">
-<input type="text" id="regUser" placeholder="Username">
-<input type="email" id="regEmail" placeholder="Email">
-<input type="password" id="regPass" placeholder="Password">
-<div class="error" id="regError"></div>
-<button id="registerBtn">Register</button>
-</div>
-
-<div id="debugLog" style="color:#0f0; font-size:0.9rem; margin-top:10px;"></div>
-</div>
-</div>
-
-<!-- Firebase CDN -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ✅ Firebase config
+/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
@@ -103,89 +110,68 @@ const firebaseConfig = {
   appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length){
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
 
-// Debug: test DB connection immediately
-db.ref("debug-test").set({time: Date.now()})
-.then(()=>console.log("✅ Database connection OK!"))
-.catch(err=>{
-    console.error("❌ Database connection FAILED:", err);
-    document.getElementById("debugLog").textContent = "Database connection FAILED: check rules/URL in Firebase console!";
-});
+/* ===== UI ===== */
+function openModal(){ modal.style.display="flex"; }
+function showLogin(){
+  loginBox.style.display="block";
+  regBox.style.display="none";
+  loginTab.classList.add("active");
+  regTab.classList.remove("active");
+}
+function showRegister(){
+  loginBox.style.display="none";
+  regBox.style.display="block";
+  regTab.classList.add("active");
+  loginTab.classList.remove("active");
+}
 
-// DOM elements
-const getStartedBtn = document.getElementById('getStartedBtn');
-const authModal = document.getElementById('authModal');
-const loginTab = document.getElementById('loginTab');
-const registerTab = document.getElementById('registerTab');
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const loginBtn = document.getElementById('loginBtn');
-const registerBtn = document.getElementById('registerBtn');
-const loginError = document.getElementById('loginError');
-const regError = document.getElementById('regError');
+/* ===== REGISTER ===== */
+function registerUser(){
+  const u = regUser.value.trim();
+  const e = regEmail.value.trim();
+  const p = regPass.value.trim();
+  if(!u||!e||!p){ alert("Fill all fields"); return; }
 
-getStartedBtn.addEventListener('click', ()=> authModal.style.display='flex');
-loginTab.addEventListener('click', ()=>{
-  loginForm.style.display='block'; registerForm.style.display='none';
-  loginTab.classList.add('active'); registerTab.classList.remove('active');
-});
-registerTab.addEventListener('click', ()=>{
-  loginForm.style.display='none'; registerForm.style.display='block';
-  registerTab.classList.add('active'); loginTab.classList.remove('active');
-});
+  db.ref("users").push({
+    username:u,
+    email:e,
+    password:p
+  }).then(()=>{
+    alert("Registered Successfully!");
+    window.location.href="https://sites.google.com/view/ska-hosting67/home";
+  }).catch(err=>{
+    alert("Register error");
+    console.log(err);
+  });
+}
 
-// Register
-registerBtn.addEventListener('click', e=>{
-  e.preventDefault();
-  regError.textContent="";
-  const username=document.getElementById('regUser').value.trim();
-  const email=document.getElementById('regEmail').value.trim();
-  const password=document.getElementById('regPass').value.trim();
-  if(!username||!email||!password){ regError.textContent="All fields required!"; return; }
-  if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){ regError.textContent="Invalid email!"; return; }
+/* ===== LOGIN ===== */
+function loginUser(){
+  const u = loginUser.value.trim();
+  const p = loginPass.value.trim();
+  if(!u||!p){ alert("Fill all fields"); return; }
 
-  db.ref("users").orderByChild("email").equalTo(email).get().then(snapshot=>{
-    if(snapshot.exists()){ regError.textContent="Email already registered!"; return; }
-    db.ref("users").push({username,email,password}).then(()=>{
-      console.log("User saved"); 
+  db.ref("users").once("value",snap=>{
+    let ok=false;
+    snap.forEach(c=>{
+      const d=c.val();
+      if((d.username===u||d.email===u)&&d.password===p){
+        ok=true;
+      }
+    });
+    if(ok){
+      alert("Login Success");
       window.location.href="https://sites.google.com/view/ska-hosting67/home";
-    }).catch(err=>{
-      console.error("Error saving user:",err);
-      regError.textContent="Error saving user!";
-    });
-  }).catch(err=>{
-    console.error("Error reading database:",err);
-    regError.textContent="Database error!";
+    }else{
+      alert("Wrong login details");
+    }
   });
-});
-
-// Login
-loginBtn.addEventListener('click', e=>{
-  e.preventDefault();
-  loginError.textContent="";
-  const userInput=document.getElementById('loginUser').value.trim();
-  const password=document.getElementById('loginPass').value.trim();
-  if(!userInput||!password){ loginError.textContent="All fields required!"; return; }
-
-  db.ref("users").get().then(snapshot=>{
-    let found=false;
-    snapshot.forEach(child=>{
-      const u=child.val();
-      if((u.username===userInput||u.email===userInput) && u.password===password) found=true;
-    });
-    if(found) window.location.href="https://sites.google.com/view/ska-hosting67/home";
-    else loginError.textContent="Invalid username/email or password!";
-  }).catch(err=>{
-    console.error("Database error:",err);
-    loginError.textContent="Database error!";
-  });
-});
-
-// Close modal
-window.addEventListener('click', e=>{ if(e.target===authModal) authModal.style.display='none'; });
+}
 </script>
 
 </body>

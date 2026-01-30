@@ -1,74 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>SKA Login System</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKA Hosting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
   margin:0;
-  height:100vh;
+  min-height:100vh;
+  background:black;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
   font-family:Arial;
-  background:#000;
+  color:white;
 }
+
+/* Neon animated background */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top, #00ffff33, transparent 40%),
+    radial-gradient(circle at bottom, #ff00ff33, transparent 40%);
+  animation: move 6s infinite alternate;
+  z-index:-1;
+}
+@keyframes move{
+  from{transform:translateY(-20px)}
+  to{transform:translateY(20px)}
+}
+
 .box{
   background:#111;
   padding:30px;
   width:320px;
   border-radius:15px;
-  box-shadow:0 0 25px #00ffff;
+  box-shadow:0 0 30px #00ffff;
   text-align:center;
 }
-h2{color:#0ff;}
-input{
+
+h1,h2{color:#0ff}
+p{color:#ccc}
+
+button{
   width:90%;
   padding:12px;
-  margin:10px 0;
-  border:none;
-  border-radius:8px;
-}
-button{
-  width:95%;
-  padding:12px;
-  margin-top:10px;
+  margin:10px;
   border:none;
   border-radius:10px;
   background:#00ffff;
-  color:#000;
   font-size:16px;
   cursor:pointer;
   box-shadow:0 0 15px #00ffff;
 }
-small{
-  color:#aaa;
-  cursor:pointer;
+
+input{
+  width:90%;
+  padding:12px;
+  margin:8px;
+  border-radius:8px;
+  border:none;
+}
+
+.hidden{display:none}
+
+/* Footer neon */
+footer{
+  margin-top:20px;
+  font-size:13px;
+  color:#00ffff;
+  text-align:center;
+  text-shadow:0 0 8px #00ffff;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h2 id="title">Login</h2>
-
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-  <button onclick="register()" id="regBtn">Register</button>
-
-  <small onclick="toggle()">New user? Register here</small>
+<!-- GET STARTED -->
+<div class="box" id="start">
+  <h1>Welcome to SKA Hosting 🚀</h1>
+  <p>Fast • Secure • Student & Gaming Friendly</p>
+  <button onclick="openLogin()">Get Started</button>
 </div>
 
-<!-- Firebase CDN -->
+<!-- LOGIN / REGISTER -->
+<div class="box hidden" id="login">
+  <h2>Login / Register</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+</div>
+
+<!-- FOOTER -->
+<footer id="footerText">
+  🎓🎮 Built for students and gamers to learn, play, and grow together. © <span id="year"></span>
+</footer>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
+/* Dynamic year */
+document.getElementById("year").innerText = new Date().getFullYear();
+
+/* Firebase config */
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
@@ -79,40 +120,34 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-let isRegister = false;
+/* Admin email */
+const ADMIN_EMAIL = "admin@ska.com";
 
-function toggle(){
-  isRegister = !isRegister;
-  document.getElementById("title").innerText = isRegister ? "Register" : "Login";
-  document.getElementById("regBtn").style.display = isRegister ? "block" : "none";
+function openLogin(){
+  start.classList.add("hidden");
+  login.classList.remove("hidden");
 }
 
+/* Register */
 function register(){
-  const e = email.value;
-  const p = password.value;
-
-  auth.createUserWithEmailAndPassword(e,p)
-  .then(()=>{
-    alert("Registration Successful! Now Login");
-    toggle();
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+  .then(()=>alert("Registration successful! Now login"))
+  .catch(e=>alert(e.message));
 }
 
+/* Login */
 function login(){
-  const e = email.value;
-  const p = password.value;
-
-  auth.signInWithEmailAndPassword(e,p)
-  .then(()=>{
-    window.location.href =
-    "https://sites.google.com/view/ska-hosting67/home";
+  auth.signInWithEmailAndPassword(email.value,password.value)
+  .then(user=>{
+    if(user.user.email === ADMIN_EMAIL){
+      footerText.innerHTML =
+        "👑 Admin Panel Active • Full Access Granted © " + new Date().getFullYear();
+    } else {
+      window.location.href =
+        "https://sites.google.com/view/ska-hosting67/home";
+    }
   })
-  .catch(err=>{
-    alert("Wrong email or password");
-  });
+  .catch(()=>alert("Wrong email or password"));
 }
 </script>
 

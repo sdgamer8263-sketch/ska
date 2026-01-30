@@ -1,155 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>SKA Hosting</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body{
-  margin:0;
-  min-height:100vh;
-  background:black;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial;
-  color:white;
-}
-
-/* Neon animated background */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at top, #00ffff33, transparent 40%),
-    radial-gradient(circle at bottom, #ff00ff33, transparent 40%);
-  animation: move 6s infinite alternate;
-  z-index:-1;
-}
-@keyframes move{
-  from{transform:translateY(-20px)}
-  to{transform:translateY(20px)}
-}
-
-.box{
-  background:#111;
-  padding:30px;
-  width:320px;
-  border-radius:15px;
-  box-shadow:0 0 30px #00ffff;
-  text-align:center;
-}
-
-h1,h2{color:#0ff}
-p{color:#ccc}
-
-button{
-  width:90%;
-  padding:12px;
-  margin:10px;
-  border:none;
-  border-radius:10px;
-  background:#00ffff;
-  font-size:16px;
-  cursor:pointer;
-  box-shadow:0 0 15px #00ffff;
-}
-
-input{
-  width:90%;
-  padding:12px;
-  margin:8px;
-  border-radius:8px;
-  border:none;
-}
-
-.hidden{display:none}
-
-/* Footer neon */
-footer{
-  margin-top:20px;
-  font-size:13px;
-  color:#00ffff;
-  text-align:center;
-  text-shadow:0 0 8px #00ffff;
-}
-</style>
-</head>
-
-<body>
-
-<!-- GET STARTED -->
-<div class="box" id="start">
-  <h1>Welcome to SKA Hosting 🚀</h1>
-  <p>Fast • Secure • Student & Gaming Friendly</p>
-  <button onclick="openLogin()">Get Started</button>
-</div>
-
-<!-- LOGIN / REGISTER -->
-<div class="box hidden" id="login">
-  <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
-</div>
-
-<!-- FOOTER -->
-<footer id="footerText">
-  🎓🎮 Built for students and gamers to learn, play, and grow together. © <span id="year"></span>
-</footer>
-
+<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* Dynamic year */
-document.getElementById("year").innerText = new Date().getFullYear();
-
-/* Firebase config */
+/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
+  databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "ska-web-168fe",
+  storageBucket: "ska-web-168fe.firebasestorage.app",
+  messagingSenderId: "782823377176",
   appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+/* ================= INIT ================= */
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
 
-/* Admin email */
-const ADMIN_EMAIL = "admin@ska.com";
+console.log("🔥 Firebase Connected");
 
-function openLogin(){
-  start.classList.add("hidden");
-  login.classList.remove("hidden");
+/* ================= REGISTER ================= */
+function registerUser() {
+  const username = document.getElementById("regUser").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPass").value.trim();
+
+  if (!username || !email || !password) {
+    alert("All fields required!");
+    return;
+  }
+
+  db.ref("users").push({
+    username: username,
+    email: email,
+    password: password
+  })
+  .then(() => {
+    alert("✅ Registration successful");
+    window.location.href =
+      "https://sites.google.com/view/ska-hosting67/home";
+  })
+  .catch((error) => {
+    console.error(error);
+    alert("❌ Register error");
+  });
 }
 
-/* Register */
-function register(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=>alert("Registration successful! Now login"))
-  .catch(e=>alert(e.message));
-}
+/* ================= LOGIN ================= */
+function loginUser() {
+  const userInput = document.getElementById("loginUser").value.trim();
+  const password = document.getElementById("loginPass").value.trim();
 
-/* Login */
-function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .then(user=>{
-    if(user.user.email === ADMIN_EMAIL){
-      footerText.innerHTML =
-        "👑 Admin Panel Active • Full Access Granted © " + new Date().getFullYear();
-    } else {
+  if (!userInput || !password) {
+    alert("All fields required!");
+    return;
+  }
+
+  db.ref("users").once("value", (snapshot) => {
+    let found = false;
+
+    snapshot.forEach((child) => {
+      const data = child.val();
+      if (
+        (data.username === userInput || data.email === userInput) &&
+        data.password === password
+      ) {
+        found = true;
+      }
+    });
+
+    if (found) {
+      alert("✅ Login success");
       window.location.href =
         "https://sites.google.com/view/ska-hosting67/home";
+    } else {
+      alert("❌ Wrong login details");
     }
-  })
-  .catch(()=>alert("Wrong email or password"));
+  });
 }
 </script>
-
-</body>
-</html>

@@ -1,9 +1,105 @@
-<!-- Firebase CDN -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SKA Hosting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
+  background-size:400% 400%;
+  animation:bg 15s ease infinite;
+}
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+button{
+  padding:15px 30px;
+  font-size:20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#ff00ff;
+  color:#fff;
+  box-shadow:0 0 15px #ff00ff;
+}
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  justify-content:center;
+  align-items:center;
+}
+.box{
+  background:#111;
+  padding:25px;
+  border-radius:15px;
+  width:300px;
+  color:#fff;
+  text-align:center;
+}
+input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
+}
+.tab button{
+  background:none;
+  border:1px solid #ff00ff;
+  margin:5px;
+}
+.tab .active{
+  background:#ff00ff;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="openModal()">Get Started</button>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="tab">
+      <button id="loginTab" class="active" onclick="showLogin()">Login</button>
+      <button id="regTab" onclick="showRegister()">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <input id="loginUser" placeholder="Username or Email">
+      <input id="loginPass" type="password" placeholder="Password">
+      <button onclick="loginUser()">Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="regBox" style="display:none">
+      <input id="regUser" placeholder="Username">
+      <input id="regEmail" placeholder="Email">
+      <input id="regPass" type="password" placeholder="Password">
+      <button onclick="registerUser()">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* ================= FIREBASE CONFIG ================= */
+/* ===== FIREBASE CONFIG ===== */
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
@@ -14,71 +110,69 @@ const firebaseConfig = {
   appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
 
-/* ================= INIT ================= */
-if (!firebase.apps.length) {
+if(!firebase.apps.length){
   firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.database();
 
-console.log("🔥 Firebase Connected");
+/* ===== UI ===== */
+function openModal(){ modal.style.display="flex"; }
+function showLogin(){
+  loginBox.style.display="block";
+  regBox.style.display="none";
+  loginTab.classList.add("active");
+  regTab.classList.remove("active");
+}
+function showRegister(){
+  loginBox.style.display="none";
+  regBox.style.display="block";
+  regTab.classList.add("active");
+  loginTab.classList.remove("active");
+}
 
-/* ================= REGISTER ================= */
-function registerUser() {
-  const username = document.getElementById("regUser").value.trim();
-  const email = document.getElementById("regEmail").value.trim();
-  const password = document.getElementById("regPass").value.trim();
-
-  if (!username || !email || !password) {
-    alert("All fields required!");
-    return;
-  }
+/* ===== REGISTER ===== */
+function registerUser(){
+  const u = regUser.value.trim();
+  const e = regEmail.value.trim();
+  const p = regPass.value.trim();
+  if(!u||!e||!p){ alert("Fill all fields"); return; }
 
   db.ref("users").push({
-    username: username,
-    email: email,
-    password: password
-  })
-  .then(() => {
-    alert("✅ Registration successful");
-    window.location.href =
-      "https://sites.google.com/view/ska-hosting67/home";
-  })
-  .catch((error) => {
-    console.error(error);
-    alert("❌ Register error");
+    username:u,
+    email:e,
+    password:p
+  }).then(()=>{
+    alert("Registered Successfully!");
+    window.location.href="https://sites.google.com/view/ska-hosting67/home";
+  }).catch(err=>{
+    alert("Register error");
+    console.log(err);
   });
 }
 
-/* ================= LOGIN ================= */
-function loginUser() {
-  const userInput = document.getElementById("loginUser").value.trim();
-  const password = document.getElementById("loginPass").value.trim();
+/* ===== LOGIN ===== */
+function loginUser(){
+  const u = loginUser.value.trim();
+  const p = loginPass.value.trim();
+  if(!u||!p){ alert("Fill all fields"); return; }
 
-  if (!userInput || !password) {
-    alert("All fields required!");
-    return;
-  }
-
-  db.ref("users").once("value", (snapshot) => {
-    let found = false;
-
-    snapshot.forEach((child) => {
-      const data = child.val();
-      if (
-        (data.username === userInput || data.email === userInput) &&
-        data.password === password
-      ) {
-        found = true;
+  db.ref("users").once("value",snap=>{
+    let ok=false;
+    snap.forEach(c=>{
+      const d=c.val();
+      if((d.username===u||d.email===u)&&d.password===p){
+        ok=true;
       }
     });
-
-    if (found) {
-      alert("✅ Login success");
-      window.location.href =
-        "https://sites.google.com/view/ska-hosting67/home";
-    } else {
-      alert("❌ Wrong login details");
+    if(ok){
+      alert("Login Success");
+      window.location.href="https://sites.google.com/view/ska-hosting67/home";
+    }else{
+      alert("Wrong login details");
     }
   });
 }
 </script>
+
+</body>
+</html>

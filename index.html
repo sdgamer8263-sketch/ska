@@ -107,8 +107,10 @@ body{
 </head>
 <body>
 
+<!-- Get Started Button -->
 <button class="neon-button" id="getStartedBtn">Get Started</button>
 
+<!-- Modal for Login/Register -->
 <div class="modal" id="authModal">
 <div class="modal-content">
 <div class="tabs">
@@ -116,6 +118,7 @@ body{
 <button id="registerTab">Register</button>
 </div>
 
+<!-- Login Form -->
 <div id="loginForm">
 <input type="text" id="loginUser" placeholder="Username or Email">
 <input type="password" id="loginPass" placeholder="Password">
@@ -123,6 +126,7 @@ body{
 <button id="loginBtn">Login</button>
 </div>
 
+<!-- Register Form -->
 <div id="registerForm" style="display:none;">
 <input type="text" id="regUser" placeholder="Username">
 <input type="email" id="regEmail" placeholder="Email">
@@ -139,101 +143,94 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ✅ Paste your Firebase config here
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// ✅ Firebase config (your project)
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
+  databaseURL: "https://ska-web-168fe-default-rtdb.firebaseio.com",
   projectId: "ska-web-168fe",
-  storageBucket: "ska-web-168fe.firebasestorage.app",
+  storageBucket: "ska-web-168fe.appspot.com",
   messagingSenderId: "782823377176",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d",
-  measurementId: "G-FFZ7V1ZSVZ"
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const getStartedBtn=document.getElementById('getStartedBtn');
-const authModal=document.getElementById('authModal');
-const loginTab=document.getElementById('loginTab');
-const registerTab=document.getElementById('registerTab');
-const loginForm=document.getElementById('loginForm');
-const registerForm=document.getElementById('registerForm');
-const loginBtn=document.getElementById('loginBtn');
-const registerBtn=document.getElementById('registerBtn');
-const loginError=document.getElementById('loginError');
-const regError=document.getElementById('regError');
+// ✅ DOM elements
+const getStartedBtn = document.getElementById('getStartedBtn');
+const authModal = document.getElementById('authModal');
+const loginTab = document.getElementById('loginTab');
+const registerTab = document.getElementById('registerTab');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const loginError = document.getElementById('loginError');
+const regError = document.getElementById('regError');
 
-getStartedBtn.addEventListener('click',()=>authModal.style.display='flex');
-loginTab.addEventListener('click',()=>{
-    loginForm.style.display='block';
-    registerForm.style.display='none';
+// ✅ Show modal on Get Started
+getStartedBtn.addEventListener('click', () => {
+    authModal.style.display = 'flex';
+});
+
+// ✅ Tab switching
+loginTab.addEventListener('click', () => {
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
     loginTab.classList.add('active');
     registerTab.classList.remove('active');
 });
-registerTab.addEventListener('click',()=>{
-    loginForm.style.display='none';
-    registerForm.style.display='block';
+registerTab.addEventListener('click', () => {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
     registerTab.classList.add('active');
     loginTab.classList.remove('active');
 });
 
-// ✅ Registration using Firebase
-registerBtn.addEventListener('click', e=>{
+// ✅ Register
+registerBtn.addEventListener('click', e => {
     e.preventDefault();
-    regError.textContent="";
-    const username=document.getElementById('regUser').value.trim();
-    const email=document.getElementById('regEmail').value.trim();
-    const password=document.getElementById('regPass').value.trim();
-    if(!username||!email||!password){regError.textContent="All fields required!"; return;}
-    if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){regError.textContent="Invalid email!"; return;}
+    regError.textContent = "";
+    const username = document.getElementById('regUser').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPass').value.trim();
+    if(!username || !email || !password) { regError.textContent="All fields required!"; return; }
+    if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){ regError.textContent="Invalid email!"; return; }
 
     // Check if user exists
     db.ref("users").orderByChild("email").equalTo(email).get().then(snapshot=>{
-        if(snapshot.exists()){regError.textContent="Email already registered!"; return;}
+        if(snapshot.exists()){ regError.textContent="Email already registered!"; return; }
         else{
-            // Save new user
             db.ref("users").push({username,email,password}).then(()=>{
                 window.location.href="https://sites.google.com/view/ska-hosting67/home";
-            }).catch(err=>{regError.textContent="Error saving user!"});
+            }).catch(err=>{ regError.textContent="Error saving user!"; });
         }
     });
 });
 
-// ✅ Login using Firebase
-loginBtn.addEventListener('click', e=>{
+// ✅ Login
+loginBtn.addEventListener('click', e => {
     e.preventDefault();
-    loginError.textContent="";
-    const userInput=document.getElementById('loginUser').value.trim();
-    const password=document.getElementById('loginPass').value.trim();
-    if(!userInput||!password){loginError.textContent="All fields required!"; return;}
+    loginError.textContent = "";
+    const userInput = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    if(!userInput || !password){ loginError.textContent="All fields required!"; return; }
 
-    db.ref("users").get().then(snapshot=>{
-        let found=false;
-        snapshot.forEach(child=>{
-            const u=child.val();
-            if((u.username===userInput||u.email===userInput) && u.password===password){
-                found=true;
+    db.ref("users").get().then(snapshot => {
+        let found = false;
+        snapshot.forEach(child => {
+            const u = child.val();
+            if((u.username===userInput || u.email===userInput) && u.password===password){
+                found = true;
             }
         });
-        if(found){window.location.href="https://sites.google.com/view/ska-hosting67/home";}
-        else{loginError.textContent="Invalid username/email or password!";}
+        if(found){ window.location.href="https://sites.google.com/view/ska-hosting67/home"; }
+        else{ loginError.textContent="Invalid username/email or password!"; }
     });
 });
 
-// Close modal if clicked outside
-window.addEventListener('click', e=>{if(e.target===authModal) authModal.style.display='none';});
+// ✅ Close modal if clicked outside
+window.addEventListener('click', e => { if(e.target === authModal) authModal.style.display='none'; });
 </script>
 </body>
 </html>

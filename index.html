@@ -143,21 +143,20 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ✅ Firebase config (your project)
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// ✅ Firebase config with databaseURL (REPLACE old config)
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
+  databaseURL: "https://ska-web-168fe-default-rtdb.firebaseio.com",
   projectId: "ska-web-168fe",
-  storageBucket: "ska-web-168fe.firebasestorage.app",
+  storageBucket: "ska-web-168fe.appspot.com",
   messagingSenderId: "782823377176",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d",
-  measurementId: "G-FFZ7V1ZSVZ"
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ✅ DOM elements
+// DOM elements
 const getStartedBtn = document.getElementById('getStartedBtn');
 const authModal = document.getElementById('authModal');
 const loginTab = document.getElementById('loginTab');
@@ -169,12 +168,10 @@ const registerBtn = document.getElementById('registerBtn');
 const loginError = document.getElementById('loginError');
 const regError = document.getElementById('regError');
 
-// ✅ Show modal on Get Started
-getStartedBtn.addEventListener('click', () => {
-    authModal.style.display = 'flex';
-});
+// Show modal on Get Started
+getStartedBtn.addEventListener('click', () => authModal.style.display = 'flex');
 
-// ✅ Tab switching
+// Tab switching
 loginTab.addEventListener('click', () => {
     loginForm.style.display = 'block';
     registerForm.style.display = 'none';
@@ -188,20 +185,20 @@ registerTab.addEventListener('click', () => {
     loginTab.classList.remove('active');
 });
 
-// ✅ Register
+// Register
 registerBtn.addEventListener('click', e => {
     e.preventDefault();
     regError.textContent = "";
     const username = document.getElementById('regUser').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPass').value.trim();
-    if(!username || !email || !password) { regError.textContent="All fields required!"; return; }
-    if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){ regError.textContent="Invalid email!"; return; }
+    if(!username || !email || !password){ regError.textContent = "All fields required!"; return; }
+    if(!/^[^ ]+@[^ ]+\.[a-z]{2,}$/i.test(email)){ regError.textContent = "Invalid email!"; return; }
 
     // Check if user exists
-    db.ref("users").orderByChild("email").equalTo(email).get().then(snapshot=>{
-        if(snapshot.exists()){ regError.textContent="Email already registered!"; return; }
-        else{
+    db.ref("users").orderByChild("email").equalTo(email).get().then(snapshot => {
+        if(snapshot.exists()){ regError.textContent = "Email already registered!"; return; }
+        else {
             db.ref("users").push({username,email,password}).then(()=>{
                 window.location.href="https://sites.google.com/view/ska-hosting67/home";
             }).catch(err=>{ regError.textContent="Error saving user!"; });
@@ -209,13 +206,13 @@ registerBtn.addEventListener('click', e => {
     });
 });
 
-// ✅ Login
+// Login
 loginBtn.addEventListener('click', e => {
     e.preventDefault();
     loginError.textContent = "";
     const userInput = document.getElementById('loginUser').value.trim();
     const password = document.getElementById('loginPass').value.trim();
-    if(!userInput || !password){ loginError.textContent="All fields required!"; return; }
+    if(!userInput || !password){ loginError.textContent = "All fields required!"; return; }
 
     db.ref("users").get().then(snapshot => {
         let found = false;
@@ -226,12 +223,12 @@ loginBtn.addEventListener('click', e => {
             }
         });
         if(found){ window.location.href="https://sites.google.com/view/ska-hosting67/home"; }
-        else{ loginError.textContent="Invalid username/email or password!"; }
+        else{ loginError.textContent = "Invalid username/email or password!"; }
     });
 });
 
-// ✅ Close modal if clicked outside
-window.addEventListener('click', e => { if(e.target === authModal) authModal.style.display='none'; });
+// Close modal if clicked outside
+window.addEventListener('click', e => { if(e.target === authModal) authModal.style.display = 'none'; });
 </script>
 </body>
 </html>

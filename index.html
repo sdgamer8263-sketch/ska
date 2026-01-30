@@ -1,93 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome My Network</title>
+<title>SKA Secure Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-    /* Reset box-sizing */
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    html, body {
-        min-height: 100vh;
-        font-family: 'Minecraftia', 'Roboto', Arial, sans-serif;
-        color: #0ff;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        overflow-x: hidden;
-
-        /* Animated neon gradient background */
-        background: linear-gradient(120deg, #0f2027, #232526, #2c5364);
-        background-size: 200% 200%;
-        animation: bgChange 16s infinite alternate ease-in-out;
-    }
-
-    @keyframes bgChange {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* Neon glowing header */
-    h1 {
-        font-size: 3rem;
-        margin-bottom: 50px;
-        color: #0ff;
-        text-shadow:
-            0 0 5px #0ff,
-            0 0 10px #0ff,
-            0 0 20px #0ff,
-            0 0 40px #0ff,
-            0 0 80px #0ff;
-        animation: neonPulse 1.5s ease-in-out infinite alternate;
-    }
-
-    @keyframes neonPulse {
-        0% { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff; }
-        100% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff, 0 0 80px #0ff, 0 0 120px #0ff; }
-    }
-
-    /* Neon buttons */
-    .btn {
-        display: inline-block;
-        margin: 20px;
-        padding: 15px 35px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #0ff;
-        text-decoration: none;
-        border: 2px solid #0ff;
-        border-radius: 12px;
-        background: rgba(0, 255, 255, 0.1);
-        box-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
-        transition: all 0.3s ease;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    .btn:hover {
-        color: #000;
-        background-color: #0ff;
-        transform: scale(1.2);
-        box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#000;
+  font-family:Arial;
+}
+.card{
+  width:330px;
+  padding:25px;
+  background:#111;
+  border-radius:15px;
+  box-shadow:0 0 30px #00ffff;
+  text-align:center;
+}
+h2{color:#0ff}
+input,button{
+  width:90%;
+  padding:12px;
+  margin:8px;
+  border:none;
+  border-radius:8px;
+}
+button{
+  background:#00ffff;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 15px #00ffff;
+}
+#logout{background:red;color:white}
+.hidden{display:none}
 </style>
 </head>
+
 <body>
-    <h1>Welcome My Network</h1>
-    <a href="https://sites.google.com/view/skahosting5/home" class="btn" target="_blank">For Study Tool</a>
-    <a href="https://sites.google.com/view/skahosting1/home" class="btn" target="_blank">Minecraft Server and Tool</a>
+
+<div class="card" id="loginBox">
+  <h2>Login / Register</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+</div>
+
+<div class="card hidden" id="dashboard">
+  <h2 id="role">Dashboard</h2>
+  <button onclick="logout()" id="logout">Logout</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+  authDomain: "ska-web-168fe.firebaseapp.com",
+  projectId: "ska-web-168fe",
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+const ADMIN_EMAIL = "admin@ska.com";
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loginBox.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+
+    if(user.email === ADMIN_EMAIL){
+      role.innerText = "👑 Admin Dashboard";
+    } else {
+      role.innerText = "User Dashboard";
+      setTimeout(()=>{
+        window.location.href =
+        "https://sites.google.com/view/ska-hosting67/home";
+      },1500);
+    }
+  }
+});
+
+function register(){
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+  .then(()=>alert("Registered! Login now"))
+  .catch(e=>alert(e.message));
+}
+
+function login(){
+  auth.signInWithEmailAndPassword(email.value,password.value)
+  .catch(()=>alert("Wrong credentials"));
+}
+
+function logout(){
+  auth.signOut();
+  location.reload();
+}
+</script>
+
 </body>
 </html>

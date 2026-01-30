@@ -3,120 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <title>SKA Hosting</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
   height:100vh;
-  background:black;
+  background:#000;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
   font-family:Arial;
 }
+
 .box{
   background:#111;
   padding:30px;
-  width:320px;
+  width:300px;
   border-radius:15px;
-  box-shadow:0 0 30px #00ffff;
+  box-shadow:0 0 20px cyan;
   text-align:center;
 }
-h1,h2{color:#0ff}
-p{color:#ccc}
 
+h1,h2{color:cyan}
 button{
   width:90%;
   padding:12px;
-  margin:10px;
+  margin-top:15px;
   border:none;
   border-radius:10px;
-  background:#00ffff;
+  background:cyan;
   font-size:16px;
   cursor:pointer;
-  box-shadow:0 0 15px #00ffff;
 }
+
 input{
   width:90%;
-  padding:12px;
+  padding:10px;
   margin:8px;
   border-radius:8px;
   border:none;
 }
-.hidden{display:none}
 
-/* FOOTER */
-footer{
-  margin-top:20px;
-  text-align:center;
-  font-size:13px;
-  color:#777;
-}
-footer span{
-  color:#0ff;
+.hidden{
+  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- GET STARTED -->
 <div class="box" id="start">
-  <h1>SKA HOSTING</h1>
-  <p>Welcome! A secure platform for Students & Gamers 🚀🎮</p>
-  <button onclick="openLogin()">🚀 Get Started</button>
+  <h1>Welcome to SKA</h1>
+  <button id="startBtn">Get Started</button>
 </div>
 
-<!-- LOGIN / REGISTER -->
 <div class="box hidden" id="login">
   <h2>Login / Register</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+  <input placeholder="Email">
+  <input type="password" placeholder="Password">
+  <button>Login</button>
+  <button>Register</button>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  © 2026 <span>SKA Hosting</span><br>
-  Built for Learning • Gaming • Growth
-</footer>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-  authDomain: "ska-web-168fe.firebaseapp.com",
-  projectId: "ska-web-168fe",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+document.getElementById("startBtn").onclick = function(){
+  document.getElementById("start").style.display = "none";
+  document.getElementById("login").style.display = "block";
 };
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-function openLogin(){
-  start.classList.add("hidden");
-  login.classList.remove("hidden");
-}
-
-function register(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=>alert("Registered! Now Login"))
-  .catch(e=>alert(e.message));
-}
-
-function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .then(()=>{
-    window.location.href =
-    "https://sites.google.com/view/ska-hosting67/home";
-  })
-  .catch(()=>alert("Wrong email or password"));
-}
 </script>
 
 </body>

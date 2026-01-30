@@ -30,10 +30,6 @@ body{
     cursor:pointer;
     background:transparent;
     box-shadow:0 0 5px #fff,0 0 10px #ff00ff,0 0 20px #ff00ff;
-    transition:0.3s;
-}
-.neon-button:hover{
-    box-shadow:0 0 10px #fff,0 0 20px #ff00ff,0 0 40px #ff00ff;
 }
 .modal{
     position:fixed; top:0; left:0; width:100%; height:100%;
@@ -95,7 +91,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// Firebase configuration
+// ✅ Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
   authDomain: "ska-web-168fe.firebaseapp.com",
@@ -110,7 +106,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// DOM
+// DOM elements
 const getStartedBtn = document.getElementById('getStartedBtn');
 const authModal = document.getElementById('authModal');
 const loginTab = document.getElementById('loginTab');
@@ -145,7 +141,7 @@ registerBtn.addEventListener('click', e=>{
   db.ref("users").orderByChild("email").equalTo(email).get().then(snapshot=>{
     if(snapshot.exists()){ regError.textContent="Email already registered!"; return; }
     db.ref("users").push({username,email,password}).then(()=>{
-      console.log("User saved"); // success log
+      console.log("User saved"); 
       window.location.href="https://sites.google.com/view/ska-hosting67/home";
     }).catch(err=>{
       console.error("Error saving user:",err);

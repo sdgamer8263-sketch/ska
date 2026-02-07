@@ -2,211 +2,319 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SKA Hosting</title>
+<title>SKA HOSTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
-  background-size:400% 400%;
-  animation:bg 15s ease infinite;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Minecraft',sans-serif}
+body{background:#000;color:#0ff;overflow-x:hidden}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;inset:0;
+  background:
+  linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+  url("fx58j1opheu71.gif") center/cover fixed;
+  z-index:-3;
 }
-@keyframes bg{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+#particles{position:fixed;inset:0;z-index:-2}
+
+/* HEADER */
+header{padding:15px;display:flex;align-items:center;gap:15px}
+header img{
+  width:55px;
+  animation:spin 30s linear infinite;
+  filter:drop-shadow(0 0 15px #0ff)
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+header button{
+  margin-left:auto;
+  background:#f33;color:#000;
+  padding:8px 14px;border-radius:12px;
+  font-weight:bold;border:none;cursor:pointer
 }
 
-h1{
-  color:white;
-  text-shadow:0 0 10px #ff00ff;
+/* HOME */
+.center{text-align:center;padding:20px}
+#typing{font-size:24px;margin:40px 0;text-shadow:0 0 20px #0ff}
+.link{cursor:pointer;margin:10px 0}
+.btn{
+  background:#0ff;color:#000;
+  padding:12px 18px;border-radius:14px;
+  font-weight:bold;cursor:pointer;
+  box-shadow:0 0 20px #0ff;
+  display:inline-block;margin:8px
 }
-p{color:#eee}
+.btn:active{transform:scale(.95)}
 
-button{
-  padding:12px 25px;
-  font-size:16px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  background:#ff00ff;
-  color:#fff;
-  box-shadow:0 0 15px #ff00ff;
-  margin-top:10px;
+/* PAGES */
+.page{
+  display:none;max-width:520px;
+  margin:30px auto;padding:20px;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  position:relative;
 }
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.8);
-  justify-content:center;
-  align-items:center;
-}
-
-.box{
-  background:#111;
-  padding:25px;
-  border-radius:15px;
-  width:300px;
-  color:#fff;
-  text-align:center;
+.back{
+  position:absolute;right:15px;top:15px;
+  padding:8px 14px;
+  background:rgba(0,255,255,.2);
+  border-radius:14px;
+  cursor:pointer
 }
 
-input{
-  width:90%;
-  padding:10px;
-  margin:8px 0;
-  border-radius:6px;
-  border:none;
+/* FORM */
+input,select,button{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:10px;border:none
+}
+input,select{background:#111;color:#0ff}
+button{background:#0ff;color:#000;font-weight:bold}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999
+}
+#loginBox{
+  background:rgba(0,0,0,.6);
+  padding:30px;border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  width:300px;text-align:center
 }
 
-.tab button{
-  background:none;
-  border:1px solid #ff00ff;
-  margin:5px;
-  color:white;
-}
-.tab .active{
-  background:#ff00ff;
-}
+/* STATUS */
+.badge{font-weight:bold;padding:6px 12px;border-radius:12px}
+.good{color:#0f0}.bad{color:#f33}
 
-footer{
-  position:fixed;
-  bottom:10px;
-  font-size:13px;
-  color:white;
-  text-shadow:0 0 6px #00ffff;
+/* GRAPH */
+canvas{width:100%;height:120px;margin-top:10px}
+
+/* LOCK */
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  50%{transform:translateX(5px)}
+  75%{transform:translateX(-5px)}
+  100%{transform:translateX(0)}
 }
+.locked{animation:shake .3s}
 </style>
 </head>
 
 <body>
+<div class="bg"></div>
+<canvas id="particles"></canvas>
 
-<h1>Welcome to SKA Hosting 🚀</h1>
-<p>For Students & Gamers 🎓🎮</p>
-<button onclick="openModal()">Get Started</button>
-
-<div class="modal" id="modal">
-  <div class="box">
-    <div class="tab">
-      <button id="loginTab" class="active" onclick="showLogin()">Login</button>
-      <button id="regTab" onclick="showRegister()">Register</button>
-    </div>
-
-    <!-- LOGIN -->
-    <div id="loginBox">
-      <input id="loginInput" placeholder="Username or Email">
-      <input id="loginPass" type="password" placeholder="Password">
-      <button onclick="loginUser()">Login</button>
-    </div>
-
-    <!-- REGISTER -->
-    <div id="regBox" style="display:none">
-      <input id="regUser" placeholder="Username">
-      <input id="regEmail" placeholder="Email">
-      <input id="regPass" type="password" placeholder="Password">
-      <button onclick="registerUser()">Register</button>
-    </div>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>🔐 Login</h2>
+    <input id="loginUser" placeholder="Username">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div id="loginMsg" style="margin-top:10px;color:#f33"></div>
   </div>
 </div>
 
-<footer>
-      © <span id="year"></span> SKA Hosting • Learn • Play • Grow 
+<header>
+  <img src="file_00000000387071faa7c92db633a8f726.png">
+  <h2>SKA HOSTING</h2>
+  <button onclick="logout()">Logout</button>
+</header>
 
-</footer>
+<div class="center" id="home">
+  <div id="typing"></div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <div class="link" onclick="openHidden('https://dash.sgaming9107.qzz.io')">
+    Free Minecraft Server Dashboard
+  </div>
+  <div class="link" onclick="openHidden('https://dash2.sgaming9107.qzz.io')">
+    Premium Minecraft Server Dashboard
+  </div>
+
+  <label class="adminOnly">
+    <input type="checkbox" id="premiumToggle"> ✨ Premium Mode
+  </label><br><br>
+
+  <div class="btn" onclick="showPage('tools')">Server Tools</div>
+</div>
+
+<!-- TOOLS -->
+<div class="page" id="tools">
+  <div class="back" onclick="goHome()">⬅</div>
+  <h2>SERVER TOOLS</h2>
+  <button onclick="showPage('status')">Server Status</button>
+  <button onclick="premiumOnly(()=>showPage('paper'),this)">🔒 Paper Build</button>
+  <button class="adminOnly" onclick="premiumOnly(()=>showPage('premium'),this)">👑 Premium Dashboard</button>
+</div>
+
+<!-- STATUS -->
+<div class="page" id="status">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Server Status</h2>
+  <input id="sip" placeholder="Server IP">
+  <button onclick="checkStatus()">Check</button>
+  <div id="sbadge"></div>
+  <canvas id="uptimeGraph"></canvas>
+  <div id="uptimeStats" style="display:none">
+    24H: <b id="up24"></b> | 7D: <b id="up7"></b>
+  </div>
+</div>
+
+<!-- PAPER -->
+<div class="page" id="paper">
+  <div class="back" onclick="showPage('tools')">⬅</div>
+  <h2>Paper Build</h2>
+  <input id="ver" placeholder="Version">
+  <button onclick="checkBuild()">Check</button>
+  <div id="buildRes"></div>
+</div>
+
+<!-- PREMIUM -->
+<div class="page" id="premium">
+  <div class="back" onclick="goHome()">⬅</div>
+  <h2>👑 Premium Dashboard</h2>
+  <div>24H Uptime: <b id="up24p"></b></div>
+  <div>7D Uptime: <b id="up7p"></b></div>
+</div>
 
 <script>
-document.getElementById("year").innerText = new Date().getFullYear();
-
-/* Firebase config */
-const firebaseConfig = {
-  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
-  authDomain: "ska-web-168fe.firebaseapp.com",
-  databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "ska-web-168fe",
-  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+/* USERS */
+const USERS={
+  admin:{pass:"ska123",role:"admin"},
+  user1:{pass:"user123",role:"user"},
+  user2:{pass:"test123",role:"user"}
 };
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-/* UI */
-function openModal(){ modal.style.display="flex"; }
-function showLogin(){
-  loginBox.style.display="block";
-  regBox.style.display="none";
-  loginTab.classList.add("active");
-  regTab.classList.remove("active");
-}
-function showRegister(){
-  loginBox.style.display="none";
-  regBox.style.display="block";
-  regTab.classList.add("active");
-  loginTab.classList.remove("active");
-}
-
-/* REGISTER */
-function registerUser(){
-  const u = regUser.value.trim();
-  const e = regEmail.value.trim();
-  const p = regPass.value.trim();
-
-  if(!u || !e || !p){
-    alert("Fill all fields");
-    return;
-  }
-
-  db.ref("users").push({
-    username:u,
-    email:e,
-    password:p
-  }).then(()=>{
-    alert("Registered successfully! Now login.");
-    showLogin();
-  }).catch(err=>{
-    alert("Register error: " + err.message);
-  });
-}
+const LOGIN_EXPIRE=86400000;
+const WEBHOOK="https://discord.com/api/webhooks/1464870423165669432/e9uEiu1QlGpHHmsyVLQxPIoczsysaImBnYp_rio1PIhaxYMR4edq3eWJvMvon1yAx2Ix";
 
 /* LOGIN */
-function loginUser(){
-  const u = loginInput.value.trim();
-  const p = loginPass.value.trim();
+function login(){
+  const u=loginUser.value,p=loginPass.value;
+  if(!USERS[u]||USERS[u].pass!==p){
+    loginMsg.innerText="Wrong login";return;
+  }
+  localStorage.setItem("auth",JSON.stringify({u,role:USERS[u].role,t:Date.now()}));
+  loginScreen.style.display="none";
+  applyRole();
+}
+function logout(){
+  localStorage.removeItem("auth");
+  location.reload();
+}
+function checkAuth(){
+  const a=JSON.parse(localStorage.getItem("auth"));
+  if(!a) return false;
+  if(Date.now()-a.t>LOGIN_EXPIRE){logout();return false;}
+  return a;
+}
+const auth=checkAuth();
+if(auth){loginScreen.style.display="none";applyRole();}
 
-  if(!u || !p){
-    alert("Fill all fields");
+function applyRole(){
+  const a=JSON.parse(localStorage.getItem("auth"));
+  if(a.role!=="admin"){
+    document.querySelectorAll(".adminOnly").forEach(e=>e.style.display="none");
+  }
+}
+
+/* NAV */
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  home.style.display="none";
+  document.getElementById(id).style.display="block";
+}
+function goHome(){
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  home.style.display="block";
+}
+function openHidden(u){window.open(u,"_blank")}
+
+/* PREMIUM LOCK */
+function premiumOnly(fn,el){
+  if(!premiumToggle.checked){
+    el.classList.add("locked");
+    setTimeout(()=>el.classList.remove("locked"),300);
+    alert("Premium only");
     return;
   }
+  fn();
+}
 
-  db.ref("users").once("value", snap=>{
-    let ok=false;
-    snap.forEach(c=>{
-      const d=c.val();
-      if((d.username===u || d.email===u) && d.password===p){
-        ok=true;
-      }
-    });
+/* TYPING */
+const msg="WELCOME IN MY GAMING NETWORK";
+let i=0;
+(function type(){
+  typing.innerText=msg.slice(0,i++);
+  if(i<=msg.length) setTimeout(type,120);
+})();
+setInterval(()=>{i=0;type()},180000);
 
-    if(ok){
-      alert("Login Success");
-      window.location.href="https://sdgamer8263-sketch.github.io/Main-dashboard/";
-    }else{
-      alert("Wrong login details");
-    }
+/* PARTICLES */
+const pc=particles,pctx=pc.getContext("2d");
+function rs(){pc.width=innerWidth;pc.height=innerHeight}
+rs();onresize=rs;
+let ps=[...Array(80)].map(()=>({x:Math.random()*pc.width,y:Math.random()*pc.height}));
+(function anim(){
+  pctx.clearRect(0,0,pc.width,pc.height);
+  ps.forEach(p=>{p.y+=.6;if(p.y>pc.height)p.y=0;
+    pctx.fillStyle="#0ff";pctx.fillRect(p.x,p.y,2,2)});
+  requestAnimationFrame(anim);
+})();
+
+/* STATUS + UPTIME */
+let log=JSON.parse(localStorage.getItem("uptime"))||[];
+let last="";
+function checkStatus(){
+  fetch(`https://api.mcsrvstat.us/2/${sip.value}`)
+  .then(r=>r.json()).then(d=>{
+    const on=d.online;
+    sbadge.innerHTML=on?'<span class="badge good">ONLINE</span>':'<span class="badge bad">OFFLINE</span>';
+    log.push({t:Date.now(),o:on});
+    if(log.length>2000)log.shift();
+    localStorage.setItem("uptime",JSON.stringify(log));
+    if(on&&last!=="on"){send("🟢 Server ONLINE");last="on"}
+    if(!on&&last!=="off"){send("🔴 Server OFFLINE");last="off"}
+    drawUptime();updateStats();
   });
 }
-</script>
+function send(m){
+  fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({content:m})});
+}
+const ug=uptimeGraph.getContext("2d");
+function drawUptime(){
+  ug.clearRect(0,0,uptimeGraph.width,uptimeGraph.height);
+  const w=uptimeGraph.width/log.length;
+  log.forEach((x,i)=>{
+    ug.fillStyle=x.o?"#0f0":"#f33";
+    ug.fillRect(i*w,0,w-1,uptimeGraph.height);
+  });
+}
+function updateStats(){
+  if(!premiumToggle.checked)return;
+  const n=Date.now();
+  const c24=log.filter(x=>x.t>n-86400000);
+  const c7=log.filter(x=>x.t>n-604800000);
+  up24.innerText=Math.round(c24.filter(x=>x.o).length/c24.length*100||0)+"%";
+  up7.innerText=Math.round(c7.filter(x=>x.o).length/c7.length*100||0)+"%";
+  up24p.innerText=up24.innerText;
+  up7p.innerText=up7.innerText;
+  uptimeStats.style.display="block";
+}
 
+/* PAPER */
+const builds={"1.21":130,"1.20.4":499,"1.19.4":550,"1.18.2":388};
+function checkBuild(){
+  buildRes.innerText=builds[ver.value]
+    ?`## Build number is ${builds[ver.value]}`
+    :"## Not found";
+}
+</script>
 </body>
 </html>

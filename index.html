@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SKA Hosting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(-45deg,#ff00ff,#00ffff,#ff0000,#00ff00);
+  background-size:400% 400%;
+  animation:bg 15s ease infinite;
+}
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
+h1{
+  color:white;
+  text-shadow:0 0 10px #ff00ff;
+}
+p{color:#eee}
+
+button{
+  padding:12px 25px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#ff00ff;
+  color:#fff;
+  box-shadow:0 0 15px #ff00ff;
+  margin-top:10px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  justify-content:center;
+  align-items:center;
+}
+
+.box{
+  background:#111;
+  padding:25px;
+  border-radius:15px;
+  width:300px;
+  color:#fff;
+  text-align:center;
+}
+
+input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
+}
+
+.tab button{
+  background:none;
+  border:1px solid #ff00ff;
+  margin:5px;
+  color:white;
+}
+.tab .active{
+  background:#ff00ff;
+}
+
+footer{
+  position:fixed;
+  bottom:10px;
+  font-size:13px;
+  color:white;
+  text-shadow:0 0 6px #00ffff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Welcome to SKA Hosting 🚀</h1>
+<p>For Students & Gamers 🎓🎮</p>
+<button onclick="openModal()">Get Started</button>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="tab">
+      <button id="loginTab" class="active" onclick="showLogin()">Login</button>
+      <button id="regTab" onclick="showRegister()">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginBox">
+      <input id="loginInput" placeholder="Username or Email">
+      <input id="loginPass" type="password" placeholder="Password">
+      <button onclick="loginUser()">Login</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="regBox" style="display:none">
+      <input id="regUser" placeholder="Username">
+      <input id="regEmail" placeholder="Email">
+      <input id="regPass" type="password" placeholder="Password">
+      <button onclick="registerUser()">Register</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+      © <span id="year"></span> SKA Hosting • Learn • Play • Grow 
+
+</footer>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+document.getElementById("year").innerText = new Date().getFullYear();
+
+/* Firebase config */
+const firebaseConfig = {
+  apiKey: "AIzaSyBvlOV7L3g_lBDRR7mcNincGVyM16xtd90",
+  authDomain: "ska-web-168fe.firebaseapp.com",
+  databaseURL: "https://ska-web-168fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ska-web-168fe",
+  appId: "1:782823377176:web:e2f62ba16d5fe0af7f366d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* UI */
+function openModal(){ modal.style.display="flex"; }
+function showLogin(){
+  loginBox.style.display="block";
+  regBox.style.display="none";
+  loginTab.classList.add("active");
+  regTab.classList.remove("active");
+}
+function showRegister(){
+  loginBox.style.display="none";
+  regBox.style.display="block";
+  regTab.classList.add("active");
+  loginTab.classList.remove("active");
+}
+
+/* REGISTER */
+function registerUser(){
+  const u = regUser.value.trim();
+  const e = regEmail.value.trim();
+  const p = regPass.value.trim();
+
+  if(!u || !e || !p){
+    alert("Fill all fields");
+    return;
+  }
+
+  db.ref("users").push({
+    username:u,
+    email:e,
+    password:p
+  }).then(()=>{
+    alert("Registered successfully! Now login.");
+    showLogin();
+  }).catch(err=>{
+    alert("Register error: " + err.message);
+  });
+}
+
+/* LOGIN */
+function loginUser(){
+  const u = loginInput.value.trim();
+  const p = loginPass.value.trim();
+
+  if(!u || !p){
+    alert("Fill all fields");
+    return;
+  }
+
+  db.ref("users").once("value", snap=>{
+    let ok=false;
+    snap.forEach(c=>{
+      const d=c.val();
+      if((d.username===u || d.email===u) && d.password===p){
+        ok=true;
+      }
+    });
+
+    if(ok){
+      alert("Login Success");
+      window.location.href="https://sdgamer8263-sketch.github.io/Main-dashboard/";
+    }else{
+      alert("Wrong login details");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
